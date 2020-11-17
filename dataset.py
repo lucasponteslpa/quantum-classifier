@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from sklearn import datasets
-from sklearn.decomposition import PCA
 import numpy as np
 from pdb import set_trace
 
@@ -14,7 +12,7 @@ class ProcessData():
         self.Y = self.iris.target
 
         self.mean = np.array([np.mean(self.X[:,i]) for i in range(self.X.shape[1])])
-        self.var = np.array([np.sqrt(np.var(self.X[:,i])) for i in range(self.X.shape[1])])
+        self.var = np.array([np.var(self.X[:,i]) for i in range(self.X.shape[1])])
         center = (self.X - np.reshape(self.mean,(1,2)))/np.reshape(self.var,(1,2))
         a = np.array([np.linalg.norm(center[i,:]) for i in range(self.X.shape[0])])
         #set_trace()
