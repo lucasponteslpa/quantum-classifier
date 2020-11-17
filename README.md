@@ -3,5 +3,7 @@ A non-official implementation of the paper "Implementing a distance-based classi
 
 ## Team
 Lucas Pontes de Albuquerque
+
 Lucas Augusto Mota de Alcantara
+
 Miguel Luiz Pessoa da Cruz Silva
