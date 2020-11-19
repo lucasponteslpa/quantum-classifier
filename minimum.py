@@ -33,5 +33,5 @@ class MinimumQClassifier():
 
         # Classifying
         self.circuito.h(0)
-        self.circuito.measure(q[0],c[0])
-        #self.circuito.x(q[2]).c_if(c[0],1)
+        self.circuito.measure(q[0],c[1])
+        self.circuito.measure(q[2],c[0])

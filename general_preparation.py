@@ -16,9 +16,11 @@ class QClassifier(object):
         self.ancilla = qiskit.QuantumRegister(1)
         self.ket_m = qiskit.QuantumRegister(self.log2M)
         self.ket_phi = qiskit.QuantumRegister(self.log2N)
-        self.key_y = qiskit.QuantumRegister(1)
-        self.c = qiskit.ClassicalRegister(2)
-        self.circuito = qiskit.QuantumCircuit(self.ancilla,self.ket_m,self.ket_phi,self.key_y,self.c)
+        self.ket_y = qiskit.QuantumRegister(1)
+        self.c_anc = qiskit.ClassicalRegister(1)
+        self.c_class = qiskit.ClassicalRegister(1)
+        self.circuito = qiskit.QuantumCircuit(self.ancilla,self.ket_m,self.ket_phi,self.ket_y,self.c_anc,self.c_class)
+
 
     def preparation(self):
 
@@ -28,6 +30,7 @@ class QClassifier(object):
         
         q_test = self.init(self.test, label="x~", ctrl_str=self.ctrl_bin(0,self.log2M)+'0')
         qb = np.array([self.ancilla])
+
         for i in range(self.log2M):
             qb = np.append(qb,self.ket_m[i])
 
@@ -52,7 +55,24 @@ class QClassifier(object):
                 qb = np.append(qb,self.ket_phi)
             self.circuito.append(q_m,list(qb))
 
+        for i in range(self.dataset_size):
+            if self.target[i] == 1:
+                target_gate = qiskit.circuit.library.XGate().control(num_ctrl_qubits=self.log2M, ctrl_state=self.ctrl_bin(i,self.log2M))
+                qb = np.array([])
+                for j in range(self.log2M):
+                    qb = np.append(qb,self.ket_m[j])
+
+                qb = np.append(qb,self.ket_y)
+                self.circuito.append(target_gate,list(qb))
+        
+
+        self.circuito.h(self.ancilla)
+        self.circuito.measure(self.ancilla,self.c_anc)
+        self.circuito.measure(self.ket_y,self.c_class)
+
+
     def init(self, vetor, label="qV", ctrl_str=None):
+
         circuito = qiskit.QuantumCircuit(int(np.log2(len(vetor))))
 
         norms = lambda v: np.sqrt(np.absolute(v[0::2])**2 + np.absolute(v[1::2])**2)
@@ -86,7 +106,9 @@ class QClassifier(object):
 
         return qvetor
 
+
     def ctrl_bin(self, state, level):
+
         state_bin = ''
         i = state
         while i//2 != 0:
