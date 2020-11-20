@@ -10,10 +10,13 @@ class ProcessData():
         self.iris = datasets.load_iris()
         self.X = self.iris.data[:, :2]  # we only take the first two features.
         self.Y = self.iris.target
+        # self.iris = datasets.load_digits()
+        # self.X = self.iris.data  # we only take the first two features.
+        # self.Y = self.iris.target
 
         self.mean = np.array([np.mean(self.X[:,i]) for i in range(self.X.shape[1])])
         self.var = np.array([np.var(self.X[:,i]) for i in range(self.X.shape[1])])
-        center = (self.X - np.reshape(self.mean,(1,2)))/np.reshape(self.var,(1,2))
+        center = (self.X - np.reshape(self.mean,(1,self.X.shape[1])))/np.reshape(self.var,(1,self.X.shape[1]))
         a = np.array([np.linalg.norm(center[i,:]) for i in range(self.X.shape[0])])
         #set_trace()
         self.norm = np.zeros((self.X.shape[0],self.X.shape[1]))

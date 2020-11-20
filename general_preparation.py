@@ -37,7 +37,7 @@ class QClassifier(object):
 
         if(self.log2N > 1):
             for i in range(self.log2M):
-                qb = np.append(qb,[self.ket_phi[i]])
+                qb = np.append(qb,self.ket_phi[i])
         else:
             qb = np.append(qb,self.ket_phi)
 
