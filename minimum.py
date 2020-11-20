@@ -14,24 +14,24 @@ class MinimumQClassifier():
         self.circuito.h(q[1])
         
         # B
-        gRy = qiskit.circuit.library.RYGate(4.304).control(num_ctrl_qubits=1)
-        self.circuito.append(gRy, [q[0],q[1]])
-        self.circuito.x(q[0])
+        gRy = qiskit.circuit.library.RYGate(4.304).control(num_ctrl_qubits=1, ctrl_state='0')
+        self.circuito.append(gRy, [q[0],q[2]])
+        # self.circuito.x(q[0])
 
         # C
-        gToffoli = qiskit.circuit.library.XGate().control(num_ctrl_qubits=2)
+        gToffoli = qiskit.circuit.library.XGate().control(num_ctrl_qubits=2, ctrl_state='01')
         self.circuito.append(gToffoli, [q[0],q[1],q[2]])
-        self.circuito.x(q[1])
+        # self.circuito.x(q[1])
 
         # D
         gRy = qiskit.circuit.library.RYGate(1.325).control(num_ctrl_qubits=2)
         self.circuito.append(gRy, [q[0],q[1],q[2]])
 
         # E
-        self.circuito.swap(q[2],q[3])
-        self.circuito.cnot(1,2)
+        #self.circuito.swap(q[2],q[3])
+        self.circuito.cnot(1,3)
 
         # Classifying
         self.circuito.h(0)
-        self.circuito.measure(q[0],c[1])
-        self.circuito.measure(q[2],c[0])
+        # self.circuito.measure(q[0],c[1])
+        # self.circuito.measure(q[3],c[0])

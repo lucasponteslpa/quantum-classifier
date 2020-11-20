@@ -28,11 +28,12 @@ class QClassifier(object):
         for i in range(int(np.log2(self.dataset_size))):
             self.circuito.h(self.ket_m[i])
         
-        q_test = self.init(self.test, label="x~", ctrl_str=self.ctrl_bin(0,self.log2M)+'0')
+        # q_test = self.init(self.test, label="x~", ctrl_str=self.ctrl_bin(0,self.log2M)+'0')
+        q_test = self.init(self.test, label="x~", ctrl_str='0')
         qb = np.array([self.ancilla])
 
-        for i in range(self.log2M):
-            qb = np.append(qb,self.ket_m[i])
+        # for i in range(self.log2M):
+        #     qb = np.append(qb,self.ket_m[i])
 
         if(self.log2N > 1):
             for i in range(self.log2M):
@@ -41,7 +42,7 @@ class QClassifier(object):
             qb = np.append(qb,self.ket_phi)
 
         self.circuito.append(q_test,list(qb))
-
+        
         for i in range(self.dataset_size):
             q_m = self.init(self.dataset[i,:],label='x_'+str(i), ctrl_str=self.ctrl_bin(i,self.log2M)+'1')
             qb = np.array([self.ancilla])
@@ -68,7 +69,7 @@ class QClassifier(object):
 
         self.circuito.h(self.ancilla)
         self.circuito.measure(self.ancilla,self.c_anc)
-        self.circuito.measure(self.ket_y,self.c_class)
+        #self.circuito.measure(self.ket_y,self.c_class)
 
 
     def init(self, vetor, label="qV", ctrl_str=None):
@@ -76,10 +77,12 @@ class QClassifier(object):
         circuito = qiskit.QuantumCircuit(int(np.log2(len(vetor))))
 
         norms = lambda v: np.sqrt(np.absolute(v[0::2])**2 + np.absolute(v[1::2])**2)
+        select_alpha = lambda v,p,i: 2*np.arcsin(v[2*i + 1]/p) if v[2*i]>0 else 2*np.pi - 2*np.arcsin(v[2*i + 1]/p) 
 
         alphas = []
         parents = norms(vetor)
-        alphas = np.append(alphas, np.array(2*np.arcsin(vetor[1::2]/parents)))[::-1]
+        alphas = np.append(alphas, np.array([ select_alpha(vetor,parents,i) for i in range(vetor.shape[0]//2)]))[::-1]
+        # alphas = np.append(alphas, np.array(2*np.arcsin(vetor[1::2]/parents)))[::-1]
 
         for _ in range(int(np.log2(len(vetor)))-1):
             new_parents = norms(parents)
@@ -93,7 +96,7 @@ class QClassifier(object):
         ctrl_state = 0
 
         for i in range(len(vetor)-2):
-            gate_op = qiskit.circuit.library.RYGate(alphas[len(alphas)-2-i]).control(num_ctrl_qubits=level,ctrl_state=ctrl_bin(ctrl_state,level))
+            gate_op = qiskit.circuit.library.RYGate(alphas[len(alphas)-2-i]).control(num_ctrl_qubits=level,ctrl_state=self.ctrl_bin(ctrl_state,level))
             circuito.append(gate_op, qlines[0:level+1])
 
             if ctrl_state == (2**level - 1):

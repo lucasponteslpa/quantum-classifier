@@ -26,6 +26,7 @@ class ProcessData():
         plt.clf()
 
         # Plot the training points
+        #plt.scatter(self.norm[42:58, 0], self.norm[42:58, 1], c=np.concatenate((self.Y[42:54],[self.Y[54]+4],self.Y[55:58])))
         plt.scatter(self.norm[:, 0], self.norm[:, 1], c=self.Y)
         plt.xlabel('Sepal length')
         plt.ylabel('Sepal width')
