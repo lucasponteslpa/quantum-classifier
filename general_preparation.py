@@ -69,7 +69,7 @@ class QClassifier(object):
 
         self.circuito.h(self.ancilla)
         self.circuito.measure(self.ancilla,self.c_anc)
-        #self.circuito.measure(self.ket_y,self.c_class)
+        self.circuito.measure(self.ket_y,self.c_class)
 
 
     def init(self, vetor, label="qV", ctrl_str=None):
