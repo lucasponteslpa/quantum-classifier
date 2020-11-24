@@ -10,9 +10,6 @@ class ProcessData():
         self.iris = datasets.load_iris()
         self.X = self.iris.data[:, :2]  # we only take the first two features.
         self.Y = self.iris.target
-        # self.iris = datasets.load_digits()
-        # self.X = self.iris.data  # we only take the first two features.
-        # self.Y = self.iris.target
 
         self.mean = np.array([np.mean(self.X[:,i]) for i in range(self.X.shape[1])])
         self.var = np.array([np.var(self.X[:,i]) for i in range(self.X.shape[1])])
